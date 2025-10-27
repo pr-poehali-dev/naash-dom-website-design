@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import Icon from '@/components/ui/icon';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const Index = () => {
   const [meterReadings, setMeterReadings] = useState({
@@ -51,11 +52,13 @@ const Index = () => {
   ];
 
   const houses = [
-    { address: 'ул. Ленина, 12', residents: 156 },
-    { address: 'ул. Ленина, 15', residents: 142 },
-    { address: 'пр. Мира, 8', residents: 189 },
-    { address: 'пр. Мира, 10', residents: 178 }
+    { address: 'ул. Ленина, 12', residents: 156, x: 25, y: 30 },
+    { address: 'ул. Ленина, 15', residents: 142, x: 65, y: 25 },
+    { address: 'пр. Мира, 8', residents: 189, x: 40, y: 65 },
+    { address: 'пр. Мира, 10', residents: 178, x: 75, y: 70 }
   ];
+
+  const [selectedHouse, setSelectedHouse] = useState<number | null>(null);
 
   return (
     <div className="min-h-screen bg-background">
@@ -412,32 +415,142 @@ const Index = () => {
         </div>
       </section>
 
-      <section className="py-16">
+      <section className="py-16 bg-secondary/20">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold mb-8 text-center">Дома под нашим управлением</h2>
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <div className="rounded-lg overflow-hidden shadow-lg">
-              <img 
-                src="https://cdn.poehali.dev/projects/c8c82193-b714-4e3a-bfd3-671ec9287262/files/a2a1a99f-7b8a-47c6-a8f6-825cab63f696.jpg" 
-                alt="Обслуживание домов"
-                className="w-full h-64 object-cover"
-              />
-            </div>
-            <div className="space-y-3">
-              {houses.map((house, index) => (
-                <Card key={index} className="hover:shadow-md transition-shadow">
-                  <CardContent className="flex items-center justify-between p-4">
-                    <div className="flex items-center space-x-3">
-                      <Icon name="MapPin" className="text-accent" size={24} />
-                      <div>
-                        <p className="font-medium">{house.address}</p>
-                        <p className="text-sm text-muted-foreground">{house.residents} жильцов</p>
+          <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            <div>
+              <Card className="overflow-hidden shadow-xl">
+                <CardHeader className="bg-gradient-to-br from-primary/10 to-accent/5">
+                  <CardTitle className="flex items-center">
+                    <Icon name="Map" className="mr-2 text-accent" size={24} />
+                    Интерактивная карта района
+                  </CardTitle>
+                  <CardDescription>Нажмите на маркер, чтобы увидеть информацию о доме</CardDescription>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <div className="relative w-full h-96 bg-gradient-to-br from-blue-50 to-green-50">
+                    <svg className="w-full h-full" viewBox="0 0 100 100">
+                      <defs>
+                        <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                          <path d="M 10 0 L 0 0 0 10" fill="none" stroke="#e0e0e0" strokeWidth="0.3"/>
+                        </pattern>
+                      </defs>
+                      <rect width="100" height="100" fill="url(#grid)" />
+                      
+                      <path d="M 10 50 Q 30 40, 50 50 T 90 50" fill="none" stroke="#93c5fd" strokeWidth="2" />
+                      <circle cx="15" cy="30" r="3" fill="#86efac" opacity="0.4" />
+                      <circle cx="70" cy="65" r="4" fill="#86efac" opacity="0.4" />
+                      <circle cx="45" cy="80" r="2.5" fill="#86efac" opacity="0.4" />
+                      
+                      <TooltipProvider>
+                        {houses.map((house, index) => (
+                          <Tooltip key={index}>
+                            <TooltipTrigger asChild>
+                              <g 
+                                className="cursor-pointer transition-transform hover:scale-110"
+                                onClick={() => setSelectedHouse(index)}
+                              >
+                                <circle 
+                                  cx={house.x} 
+                                  cy={house.y} 
+                                  r="4" 
+                                  fill={selectedHouse === index ? "#ff7e00" : "#0056b3"}
+                                  stroke="white"
+                                  strokeWidth="0.5"
+                                  className="transition-all"
+                                />
+                                <path
+                                  d={`M ${house.x} ${house.y - 4} L ${house.x - 2} ${house.y - 8} L ${house.x + 2} ${house.y - 8} Z`}
+                                  fill={selectedHouse === index ? "#ff7e00" : "#0056b3"}
+                                  stroke="white"
+                                  strokeWidth="0.3"
+                                />
+                              </g>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <div className="text-sm">
+                                <p className="font-bold">{house.address}</p>
+                                <p className="text-muted-foreground">{house.residents} жильцов</p>
+                              </div>
+                            </TooltipContent>
+                          </Tooltip>
+                        ))}
+                      </TooltipProvider>
+                    </svg>
+                    
+                    {selectedHouse !== null && (
+                      <div className="absolute bottom-4 left-4 right-4">
+                        <Card className="bg-white/95 backdrop-blur-sm border-accent border-2 animate-fade-in">
+                          <CardContent className="p-4">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center space-x-3">
+                                <Icon name="Building2" className="text-accent" size={32} />
+                                <div>
+                                  <p className="font-bold text-lg">{houses[selectedHouse].address}</p>
+                                  <p className="text-sm text-muted-foreground">
+                                    {houses[selectedHouse].residents} жильцов
+                                  </p>
+                                </div>
+                              </div>
+                              <Button 
+                                variant="ghost" 
+                                size="icon"
+                                onClick={() => setSelectedHouse(null)}
+                              >
+                                <Icon name="X" size={20} />
+                              </Button>
+                            </div>
+                          </CardContent>
+                        </Card>
                       </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            
+            <div>
+              <div className="space-y-3">
+                {houses.map((house, index) => (
+                  <Card 
+                    key={index} 
+                    className={`hover:shadow-md transition-all cursor-pointer ${selectedHouse === index ? 'ring-2 ring-accent' : ''}`}
+                    onClick={() => setSelectedHouse(index)}
+                  >
+                    <CardContent className="flex items-center justify-between p-4">
+                      <div className="flex items-center space-x-3">
+                        <Icon name="MapPin" className="text-accent" size={24} />
+                        <div>
+                          <p className="font-medium">{house.address}</p>
+                          <p className="text-sm text-muted-foreground">{house.residents} жильцов</p>
+                        </div>
+                      </div>
+                      <Icon name="ChevronRight" className="text-muted-foreground" size={20} />
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+              
+              <Card className="mt-6 bg-gradient-to-br from-primary/5 to-accent/5">
+                <CardHeader>
+                  <CardTitle className="text-lg">Всего под управлением</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-3xl font-bold text-accent">{houses.length}</p>
+                      <p className="text-sm text-muted-foreground">домов</p>
                     </div>
-                    <Icon name="ChevronRight" className="text-muted-foreground" size={20} />
-                  </CardContent>
-                </Card>
-              ))}
+                    <div>
+                      <p className="text-3xl font-bold text-accent">
+                        {houses.reduce((sum, house) => sum + house.residents, 0)}
+                      </p>
+                      <p className="text-sm text-muted-foreground">жильцов</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>
