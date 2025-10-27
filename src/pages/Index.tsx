@@ -9,6 +9,10 @@ import { Separator } from '@/components/ui/separator';
 import Icon from '@/components/ui/icon';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useToast } from '@/hooks/use-toast';
+import { Toaster } from '@/components/ui/toaster';
 
 const Index = () => {
   const [meterReadings, setMeterReadings] = useState({
@@ -88,6 +92,40 @@ const Index = () => {
 
   const [selectedHouse, setSelectedHouse] = useState<number | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { toast } = useToast();
+  
+  const [requestForm, setRequestForm] = useState({
+    name: '',
+    phone: '',
+    address: '',
+    category: '',
+    description: ''
+  });
+
+  const handleSubmitRequest = () => {
+    if (!requestForm.name || !requestForm.phone || !requestForm.category) {
+      toast({
+        title: 'Ошибка',
+        description: 'Пожалуйста, заполните все обязательные поля',
+        variant: 'destructive'
+      });
+      return;
+    }
+    
+    console.log('Request submitted:', requestForm);
+    toast({
+      title: 'Заявка отправлена!',
+      description: 'Мы свяжемся с вами в ближайшее время.'
+    });
+    
+    setRequestForm({
+      name: '',
+      phone: '',
+      address: '',
+      category: '',
+      description: ''
+    });
+  };
 
   const menuItems = [
     { href: '#about', label: 'О компании', icon: 'Building' },
@@ -679,6 +717,132 @@ const Index = () => {
         </div>
       </section>
 
+      <section className="py-16 bg-gradient-to-br from-secondary/30 to-background">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold mb-8 text-center">Оставить заявку</h2>
+          <div className="max-w-4xl mx-auto">
+            <Card className="shadow-xl">
+              <CardHeader className="bg-gradient-to-r from-primary/10 to-accent/10">
+                <CardTitle className="flex items-center text-2xl">
+                  <Icon name="MessageSquare" className="mr-2 text-accent" size={28} />
+                  Форма обратной связи
+                </CardTitle>
+                <CardDescription className="text-base">
+                  Оставьте заявку, и мы свяжемся с вами в течение 1 часа
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="req-name">ФИО *</Label>
+                      <Input
+                        id="req-name"
+                        placeholder="Иванов Иван Иванович"
+                        value={requestForm.name}
+                        onChange={(e) => setRequestForm({...requestForm, name: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="req-phone">Телефон *</Label>
+                      <Input
+                        id="req-phone"
+                        type="tel"
+                        placeholder="+7 (999) 123-45-67"
+                        value={requestForm.phone}
+                        onChange={(e) => setRequestForm({...requestForm, phone: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="req-address">Адрес квартиры</Label>
+                      <Input
+                        id="req-address"
+                        placeholder="ул. Ленина, 12, кв. 45"
+                        value={requestForm.address}
+                        onChange={(e) => setRequestForm({...requestForm, address: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="req-category">Категория заявки *</Label>
+                      <Select
+                        value={requestForm.category}
+                        onValueChange={(value) => setRequestForm({...requestForm, category: value})}
+                      >
+                        <SelectTrigger id="req-category">
+                          <SelectValue placeholder="Выберите категорию" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="repair">Аварийный ремонт</SelectItem>
+                          <SelectItem value="maintenance">Плановое обслуживание</SelectItem>
+                          <SelectItem value="cleaning">Уборка и благоустройство</SelectItem>
+                          <SelectItem value="utilities">Коммунальные услуги</SelectItem>
+                          <SelectItem value="documents">Документы и справки</SelectItem>
+                          <SelectItem value="other">Другое</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="h-full flex flex-col">
+                      <Label htmlFor="req-description">Описание проблемы</Label>
+                      <Textarea
+                        id="req-description"
+                        placeholder="Опишите подробно вашу заявку..."
+                        className="flex-1 min-h-[200px] resize-none"
+                        value={requestForm.description}
+                        onChange={(e) => setRequestForm({...requestForm, description: e.target.value})}
+                      />
+                    </div>
+                  </div>
+                </div>
+                
+                <Separator className="my-6" />
+                
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Button 
+                    className="flex-1 bg-accent hover:bg-accent/90" 
+                    size="lg"
+                    onClick={handleSubmitRequest}
+                  >
+                    <Icon name="Send" className="mr-2" size={20} />
+                    Отправить заявку
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="lg"
+                    onClick={() => setRequestForm({
+                      name: '',
+                      phone: '',
+                      address: '',
+                      category: '',
+                      description: ''
+                    })}
+                  >
+                    <Icon name="RotateCcw" className="mr-2" size={20} />
+                    Очистить
+                  </Button>
+                </div>
+                
+                <div className="mt-6 p-4 bg-secondary/50 rounded-lg">
+                  <div className="flex items-start space-x-3">
+                    <Icon name="Info" className="text-accent mt-0.5" size={20} />
+                    <div className="text-sm text-muted-foreground">
+                      <p className="font-medium mb-1">Важно знать:</p>
+                      <ul className="list-disc list-inside space-y-1">
+                        <li>Среднее время обработки заявки — 1 час</li>
+                        <li>Аварийные ситуации — звоните 8 (812) 555-0100</li>
+                        <li>Мы работаем ежедневно с 9:00 до 21:00</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       <section id="contacts" className="py-16 bg-primary text-white">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold mb-8 text-center">Контакты и реквизиты</h2>
@@ -745,6 +909,7 @@ const Index = () => {
       </section>
 
       <footer className="bg-foreground text-background py-8">
+        <Toaster />
         <div className="container mx-auto px-4 text-center">
           <p className="text-sm opacity-80">
             © 2025 Группа управляющих компаний "НАШ ДОМ". Все права защищены.
