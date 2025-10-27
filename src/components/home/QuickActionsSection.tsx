@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import Icon from '@/components/ui/icon';
+import FadeIn from '@/components/ui/fade-in';
 
 export default function QuickActionsSection() {
   const { toast } = useToast();
@@ -56,9 +57,12 @@ export default function QuickActionsSection() {
   return (
     <section className="py-16 bg-gradient-to-br from-primary/5 to-accent/5">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold mb-8 text-center">Быстрые действия</h2>
+        <FadeIn>
+          <h2 className="text-3xl font-bold mb-8 text-center">Быстрые действия</h2>
+        </FadeIn>
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          <Card>
+          <FadeIn delay={0.1}>
+            <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Icon name="Gauge" className="mr-2 text-accent" />
@@ -101,8 +105,10 @@ export default function QuickActionsSection() {
               </Button>
             </CardContent>
           </Card>
+          </FadeIn>
 
-          <Card>
+          <FadeIn delay={0.2}>
+            <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Icon name="AlertCircle" className="mr-2 text-accent" />
@@ -166,6 +172,7 @@ export default function QuickActionsSection() {
               </Button>
             </CardContent>
           </Card>
+          </FadeIn>
         </div>
       </div>
     </section>

@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
+import FadeIn from '@/components/ui/fade-in';
 
 export default function NewsSection() {
   const news = [
@@ -59,13 +60,15 @@ export default function NewsSection() {
   return (
     <section id="news" className="py-16">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between mb-8">
+        <FadeIn>
+          <div className="flex items-center justify-between mb-8">
           <div>
             <h2 className="text-3xl font-bold mb-2">Новости и объявления</h2>
             <p className="text-muted-foreground">Актуальная информация для жильцов</p>
           </div>
           <Icon name="Newspaper" size={48} className="text-accent opacity-20" />
         </div>
+        </FadeIn>
 
         <div className="flex flex-wrap gap-2 mb-6">
           {allTags.map((tag) => (
@@ -82,8 +85,9 @@ export default function NewsSection() {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredNews.map((item) => (
-            <Card key={item.id} className="hover:shadow-lg transition-all hover:-translate-y-1">
+          {filteredNews.map((item, index) => (
+            <FadeIn key={item.id} delay={index * 0.1}>
+            <Card className="hover:shadow-lg transition-all hover:-translate-y-1">
               <CardHeader>
                 <div className="flex items-start justify-between mb-2">
                   <Badge variant="secondary">{item.tag}</Badge>
@@ -99,6 +103,7 @@ export default function NewsSection() {
                 </Button>
               </CardContent>
             </Card>
+            </FadeIn>
           ))}
         </div>
       </div>

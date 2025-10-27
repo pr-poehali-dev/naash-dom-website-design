@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
+import FadeIn from '@/components/ui/fade-in';
 
 export default function ServicesSection() {
   const services = [
@@ -13,13 +14,15 @@ export default function ServicesSection() {
   return (
     <section id="services" className="py-16 bg-secondary/30">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between mb-8">
+        <FadeIn>
+          <div className="flex items-center justify-between mb-8">
           <div>
             <h2 className="text-3xl font-bold mb-2">Услуги и тарифы</h2>
             <p className="text-muted-foreground">Полный перечень наших услуг</p>
           </div>
           <Icon name="Briefcase" size={48} className="text-accent opacity-20" />
         </div>
+        </FadeIn>
 
         <Tabs defaultValue="tariffs" className="w-full">
           <TabsList className="grid w-full max-w-md grid-cols-2">

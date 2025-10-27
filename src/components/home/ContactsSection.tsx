@@ -1,21 +1,25 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
+import FadeIn from '@/components/ui/fade-in';
 
 export default function ContactsSection() {
   return (
     <section id="contacts" className="py-16 bg-secondary/30">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between mb-8">
+        <FadeIn>
+          <div className="flex items-center justify-between mb-8">
           <div>
             <h2 className="text-3xl font-bold mb-2">Контакты</h2>
             <p className="text-muted-foreground">Мы всегда на связи</p>
           </div>
           <Icon name="Phone" size={48} className="text-accent opacity-20" />
         </div>
+        </FadeIn>
 
         <div className="grid md:grid-cols-3 gap-6">
-          <Card className="hover:shadow-lg transition-shadow">
+          <FadeIn delay={0.1}>
+            <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <Icon name="Phone" size={32} className="text-accent mb-2" />
               <CardTitle>Телефон</CardTitle>
@@ -29,8 +33,10 @@ export default function ContactsSection() {
               </Button>
             </CardContent>
           </Card>
+          </FadeIn>
 
-          <Card className="hover:shadow-lg transition-shadow">
+          <FadeIn delay={0.2}>
+            <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <Icon name="Mail" size={32} className="text-accent mb-2" />
               <CardTitle>Email</CardTitle>
@@ -44,8 +50,10 @@ export default function ContactsSection() {
               </Button>
             </CardContent>
           </Card>
+          </FadeIn>
 
-          <Card className="hover:shadow-lg transition-shadow">
+          <FadeIn delay={0.3}>
+            <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <Icon name="MapPin" size={32} className="text-accent mb-2" />
               <CardTitle>Адрес офиса</CardTitle>
@@ -59,6 +67,7 @@ export default function ContactsSection() {
               </Button>
             </CardContent>
           </Card>
+          </FadeIn>
         </div>
 
         <Card className="mt-8 bg-gradient-to-r from-primary/10 to-accent/10 border-accent/20">
