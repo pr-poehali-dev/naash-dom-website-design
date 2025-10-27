@@ -282,37 +282,48 @@ const Index = () => {
             </Link>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 mb-12">
+          <div className="grid md:grid-cols-4 gap-6 mb-12">
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <Icon name="Maximize2" size={40} className="text-accent mb-2" />
+                <CardTitle className="text-3xl font-bold text-accent">1 млн м²</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Обслуживаемой площади
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <Icon name="Building2" size={40} className="text-accent mb-2" />
+                <CardTitle className="text-3xl font-bold text-accent">50+</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Многоквартирных домов
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <Icon name="Car" size={40} className="text-accent mb-2" />
+                <CardTitle className="text-3xl font-bold text-accent">13</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Паркингов в управлении
+                </p>
+              </CardContent>
+            </Card>
             <Card className="hover:shadow-lg transition-shadow">
               <CardHeader>
                 <Icon name="Award" size={40} className="text-accent mb-2" />
-                <CardTitle>15+ лет опыта</CardTitle>
+                <CardTitle className="text-3xl font-bold text-accent">18 лет</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  Профессионально управляем многоквартирными домами с 2010 года
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <Icon name="Users" size={40} className="text-accent mb-2" />
-                <CardTitle>5000+ жильцов</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Доверяют нам управление своими домами в Санкт-Петербурге
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <Icon name="CheckCircle" size={40} className="text-accent mb-2" />
-                <CardTitle>100% прозрачность</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Полная финансовая отчетность и открытая информация для жильцов
+                  Оказываем услуги нашим жильцам
                 </p>
               </CardContent>
             </Card>
