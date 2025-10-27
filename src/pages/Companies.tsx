@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
 import { managementCompanies, getTotalStats } from '@/data/companies';
+import CompaniesMap from '@/components/CompaniesMap';
 
 const Companies = () => {
   const stats = getTotalStats();
@@ -53,6 +54,12 @@ const Companies = () => {
               </CardContent>
             </Card>
           </div>
+        </div>
+      </section>
+
+      <section className="py-16">
+        <div className="container mx-auto px-4 max-w-7xl">
+          <CompaniesMap />
         </div>
       </section>
 
