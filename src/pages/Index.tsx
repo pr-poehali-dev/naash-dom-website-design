@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import Icon from '@/components/ui/icon';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 
 const Index = () => {
   const [meterReadings, setMeterReadings] = useState({
@@ -59,6 +60,15 @@ const Index = () => {
   ];
 
   const [selectedHouse, setSelectedHouse] = useState<number | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const menuItems = [
+    { href: '#about', label: 'О компании', icon: 'Building' },
+    { href: '#news', label: 'Новости', icon: 'Newspaper' },
+    { href: '#services', label: 'Услуги', icon: 'Briefcase' },
+    { href: '#documents', label: 'Документы', icon: 'FileText' },
+    { href: '#contacts', label: 'Контакты', icon: 'Phone' }
+  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -72,13 +82,62 @@ const Index = () => {
                 <p className="text-sm opacity-90">Группа управляющих компаний</p>
               </div>
             </div>
+            
             <nav className="hidden md:flex space-x-6">
-              <a href="#about" className="hover:opacity-80 transition-opacity">О компании</a>
-              <a href="#news" className="hover:opacity-80 transition-opacity">Новости</a>
-              <a href="#services" className="hover:opacity-80 transition-opacity">Услуги</a>
-              <a href="#documents" className="hover:opacity-80 transition-opacity">Документы</a>
-              <a href="#contacts" className="hover:opacity-80 transition-opacity">Контакты</a>
+              {menuItems.map((item) => (
+                <a 
+                  key={item.href}
+                  href={item.href} 
+                  className="hover:opacity-80 transition-opacity"
+                >
+                  {item.label}
+                </a>
+              ))}
             </nav>
+
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="md:hidden text-white hover:bg-white/20"
+                >
+                  <Icon name="Menu" size={24} />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-72">
+                <SheetHeader>
+                  <SheetTitle className="flex items-center space-x-2">
+                    <Icon name="Building2" size={24} className="text-accent" />
+                    <span>НАШ ДОМ</span>
+                  </SheetTitle>
+                </SheetHeader>
+                <nav className="flex flex-col space-y-1 mt-8">
+                  {menuItems.map((item) => (
+                    <a
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-secondary transition-colors"
+                    >
+                      <Icon name={item.icon} size={20} className="text-accent" />
+                      <span className="font-medium">{item.label}</span>
+                    </a>
+                  ))}
+                </nav>
+                <Separator className="my-6" />
+                <div className="space-y-3">
+                  <Button className="w-full bg-accent hover:bg-accent/90" size="lg">
+                    <Icon name="Phone" className="mr-2" size={20} />
+                    Аварийная служба
+                  </Button>
+                  <div className="bg-secondary/50 p-4 rounded-lg text-center">
+                    <p className="text-sm text-muted-foreground mb-1">Круглосуточно</p>
+                    <p className="text-xl font-bold text-accent">8 (812) 555-0100</p>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </header>
