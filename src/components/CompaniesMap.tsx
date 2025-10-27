@@ -4,6 +4,9 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { managementCompanies } from '@/data/companies';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import Icon from '@/components/ui/icon';
 
 const customIcon = L.divIcon({
   className: 'custom-marker',
@@ -23,6 +26,7 @@ interface MapLocation {
   lat: number;
   lng: number;
   type: 'house' | 'office';
+  companyId: string;
   companyName: string;
   address: string;
   residents?: number;
@@ -34,7 +38,7 @@ function MapBounds({ locations }: { locations: MapLocation[] }) {
   useEffect(() => {
     if (locations.length > 0) {
       const bounds = L.latLngBounds(locations.map(loc => [loc.lat, loc.lng]));
-      map.fitBounds(bounds, { padding: [50, 50] });
+      map.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
     }
   }, [locations, map]);
 
@@ -42,17 +46,20 @@ function MapBounds({ locations }: { locations: MapLocation[] }) {
 }
 
 export default function CompaniesMap() {
-  const [locations, setLocations] = useState<MapLocation[]>([]);
+  const [allLocations, setAllLocations] = useState<MapLocation[]>([]);
+  const [filteredLocations, setFilteredLocations] = useState<MapLocation[]>([]);
+  const [selectedCompany, setSelectedCompany] = useState<string | null>(null);
 
   useEffect(() => {
-    const allLocations: MapLocation[] = [];
+    const locations: MapLocation[] = [];
 
     managementCompanies.forEach(company => {
       if (company.coordinates) {
-        allLocations.push({
+        locations.push({
           lat: company.coordinates.lat,
           lng: company.coordinates.lng,
           type: 'office',
+          companyId: company.id,
           companyName: company.name,
           address: company.address,
         });
@@ -60,10 +67,11 @@ export default function CompaniesMap() {
 
       company.houses.forEach(house => {
         if (house.lat && house.lng) {
-          allLocations.push({
+          locations.push({
             lat: house.lat,
             lng: house.lng,
             type: 'house',
+            companyId: company.id,
             companyName: company.shortName,
             address: house.address,
             residents: house.residents,
@@ -72,10 +80,20 @@ export default function CompaniesMap() {
       });
     });
 
-    setLocations(allLocations);
+    setAllLocations(locations);
+    setFilteredLocations(locations);
   }, []);
 
-  if (locations.length === 0) {
+  const handleFilterChange = (companyId: string | null) => {
+    setSelectedCompany(companyId);
+    if (companyId === null) {
+      setFilteredLocations(allLocations);
+    } else {
+      setFilteredLocations(allLocations.filter(loc => loc.companyId === companyId));
+    }
+  };
+
+  if (allLocations.length === 0) {
     return null;
   }
 
@@ -86,6 +104,39 @@ export default function CompaniesMap() {
           <span>🗺️</span>
           Карта домов и офисов
         </CardTitle>
+        <div className="mt-4">
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant={selectedCompany === null ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => handleFilterChange(null)}
+              className="h-8"
+            >
+              <Icon name="Building2" size={14} className="mr-1" />
+              Все компании
+              <Badge variant="secondary" className="ml-2">
+                {allLocations.length}
+              </Badge>
+            </Button>
+            {managementCompanies.map(company => {
+              const companyLocations = allLocations.filter(loc => loc.companyId === company.id);
+              return (
+                <Button
+                  key={company.id}
+                  variant={selectedCompany === company.id ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => handleFilterChange(company.id)}
+                  className="h-8 text-xs"
+                >
+                  {company.shortName}
+                  <Badge variant="secondary" className="ml-2">
+                    {companyLocations.length}
+                  </Badge>
+                </Button>
+              );
+            })}
+          </div>
+        </div>
       </CardHeader>
       <CardContent>
         <div className="h-[600px] w-full rounded-lg overflow-hidden">
@@ -99,8 +150,8 @@ export default function CompaniesMap() {
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            <MapBounds locations={locations} />
-            {locations.map((location, index) => (
+            <MapBounds locations={filteredLocations} />
+            {filteredLocations.map((location, index) => (
               <Marker
                 key={index}
                 position={[location.lat, location.lng]}
@@ -122,11 +173,11 @@ export default function CompaniesMap() {
         <div className="mt-4 flex gap-4 text-sm">
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 rounded-full bg-sky-500 border-2 border-white"></div>
-            <span>Дома</span>
+            <span>Дома ({filteredLocations.filter(l => l.type === 'house').length})</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 rounded-full bg-amber-500 border-2 border-white"></div>
-            <span>Офисы УК</span>
+            <span>Офисы УК ({filteredLocations.filter(l => l.type === 'office').length})</span>
           </div>
         </div>
       </CardContent>
