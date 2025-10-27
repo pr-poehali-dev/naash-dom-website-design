@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -13,6 +14,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { Toaster } from '@/components/ui/toaster';
+import { getTotalStats } from '@/data/companies';
 
 const Index = () => {
   const [meterReadings, setMeterReadings] = useState({
@@ -265,7 +267,21 @@ const Index = () => {
 
       <section id="about" className="py-16">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-8 text-center">О нашей компании</h2>
+          <h2 className="text-3xl font-bold mb-8 text-center">О группе компаний</h2>
+          
+          <div className="mb-12 text-center max-w-3xl mx-auto">
+            <p className="text-lg text-muted-foreground mb-6">
+              Группа управляющих компаний "НАШ ДОМ" объединяет {getTotalStats().totalCompanies} профессиональные УК, 
+              обслуживающие {getTotalStats().totalHouses} домов и {getTotalStats().totalResidents.toLocaleString()} жильцов по всему Санкт-Петербургу.
+            </p>
+            <Link to="/companies">
+              <Button size="lg" className="bg-accent hover:bg-accent/90">
+                <Icon name="Building2" className="mr-2" size={20} />
+                Посмотреть все компании группы
+              </Button>
+            </Link>
+          </div>
+
           <div className="grid md:grid-cols-3 gap-6 mb-12">
             <Card className="hover:shadow-lg transition-shadow">
               <CardHeader>
