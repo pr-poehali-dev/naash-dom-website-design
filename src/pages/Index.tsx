@@ -42,8 +42,35 @@ const Index = () => {
       date: '20 октября 2025',
       tag: 'Важно!',
       excerpt: 'Утверждены новые тарифы на коммунальные услуги. С подробностями можно ознакомиться в разделе документов.'
+    },
+    {
+      id: 4,
+      title: 'Благоустройство придомовой территории',
+      date: '18 октября 2025',
+      tag: 'Ремонт',
+      excerpt: 'Начаты работы по озеленению и обновлению детских площадок во дворах домов на пр. Мира.'
+    },
+    {
+      id: 5,
+      title: 'График уборки снега',
+      date: '15 октября 2025',
+      tag: 'Важно!',
+      excerpt: 'Утверждён график зимней уборки территории. Все подробности в разделе документов.'
+    },
+    {
+      id: 6,
+      title: 'Итоги собрания жильцов',
+      date: '10 октября 2025',
+      tag: 'Собрание',
+      excerpt: 'Опубликованы протоколы последнего общего собрания. Приняты решения по капитальному ремонту.'
     }
   ];
+
+  const [newsFilter, setNewsFilter] = useState('Все');
+  const allTags = ['Все', ...Array.from(new Set(news.map(item => item.tag)))];
+  const filteredNews = newsFilter === 'Все' 
+    ? news 
+    : news.filter(item => item.tag === newsFilter);
 
   const services = [
     { name: 'Содержание и ремонт', price: '25.50', unit: 'руб/м²' },
@@ -262,9 +289,33 @@ const Index = () => {
       <section id="news" className="py-16 bg-secondary/30">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold mb-8 text-center">Новости и объявления</h2>
+          
+          <div className="flex flex-wrap justify-center gap-2 mb-8">
+            {allTags.map((tag) => (
+              <Button
+                key={tag}
+                variant={newsFilter === tag ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setNewsFilter(tag)}
+                className={newsFilter === tag ? 'bg-accent hover:bg-accent/90' : ''}
+              >
+                {tag === 'Важно!' && <Icon name="AlertCircle" className="mr-1" size={16} />}
+                {tag === 'Ремонт' && <Icon name="Wrench" className="mr-1" size={16} />}
+                {tag === 'Собрание' && <Icon name="Users" className="mr-1" size={16} />}
+                {tag === 'Все' && <Icon name="Grid3x3" className="mr-1" size={16} />}
+                {tag}
+                {tag !== 'Все' && (
+                  <Badge variant="secondary" className="ml-2 px-1.5 py-0 text-xs">
+                    {news.filter(item => item.tag === tag).length}
+                  </Badge>
+                )}
+              </Button>
+            ))}
+          </div>
+
           <div className="grid md:grid-cols-3 gap-6">
-            {news.map((item) => (
-              <Card key={item.id} className="hover:shadow-lg transition-shadow">
+            {filteredNews.map((item) => (
+              <Card key={item.id} className="hover:shadow-lg transition-shadow animate-fade-in">
                 <CardHeader>
                   <div className="flex items-center justify-between mb-2">
                     <Badge variant={item.tag === 'Важно!' ? 'destructive' : 'secondary'}>
@@ -282,6 +333,19 @@ const Index = () => {
                 </CardContent>
               </Card>
             ))}
+          </div>
+
+          {filteredNews.length === 0 && (
+            <div className="text-center py-12">
+              <Icon name="FileSearch" size={48} className="mx-auto text-muted-foreground mb-4" />
+              <p className="text-muted-foreground text-lg">Новостей в этой категории пока нет</p>
+            </div>
+          )}
+
+          <div className="mt-8 text-center">
+            <p className="text-sm text-muted-foreground">
+              Показано: <span className="font-bold text-accent">{filteredNews.length}</span> из {news.length} новостей
+            </p>
           </div>
         </div>
       </section>
